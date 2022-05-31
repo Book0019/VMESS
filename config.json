@@ -1,29 +1,41 @@
 {
-  "inbounds": [
-    {
-      "port": 443,
-      "listen":"127.0.0.1",
-      "protocol": "vmess",
-      "settings": {
-        "clients": [
-          {
-            "id": "ceea8cfd-a7b0-4e6c-b5ab-f8d98bbe368e",
-            "alterId": 64
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "ws",
-        "wsSettings": {
-        "path": "/tech"
+  "log": {
+  "loglevel": "warning",
+  "access": "/var/log/v2ray/access.log", // 这是 Linux 的路径
+  "error": "/var/log/v2ray/error.log"
+ },
+  "inbounds": [{
+    "port": 8793,           //!!! 此处为安装时生成的端口，可修改随意，但是保证和下面提到的端口号相同
+    //"listen":"127.0.0.1",  // !!! uncomment for nginx local forwarding
+    "protocol": "vmess",
+    "settings": {
+      "clients": [
+        {
+          "id": "ceea8cfd-a7b0-4e6c-b5ab-f8d98bbe368e", //!!! 修改为任一合法UUID
+          "level": 1,
+          "alterId": 64      //此处为安装时生成的 alterId
         }
+      ]
+    },
+    "streamSettings": {
+	    "network": "tcp"
+    }
+  }],
+  "outbounds": [{
+    "protocol": "freedom",
+    "settings": {}
+  },{
+    "protocol": "blackhole",
+    "settings": {},
+    "tag": "blocked"
+  }],
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "ip": ["geoip:private"],
+        "outboundTag": "blocked"
       }
-    }
-  ],
-  "outbounds": [
-    {
-      "protocol": "freedom",
-      "settings": {}
-    }
-  ]
+    ]
+  }
 }
